@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>JS Pub Sub example - jsFiddle demo</title>
+  
+  
+  <script type='text/javascript' src='http://code.jquery.com/jquery-1.11.3.min.js'></script>
+
+<script type='text/javascript'>
+
+
+$(window).load(function() {
+//------------------------------
+// pub sub plugin
+//------------------------------
+;(function(d){
+    var cache = {};
+
+    d.publish = function(/* String */topic, /* Array? */args){
+        try{
+            d.each(cache[topic], function(){
+                this.apply(d, args || []);
+            });
+        } catch (err) {
+            // handle this error
+            console.log(err);
+        }
+    };
+
+    d.subscribe = function(/* String */topic, /* Function */callback){
+        if(!cache[topic]){
+            cache[topic] = [];
+        }
+        cache[topic].push(callback);
+        return [topic, callback]; // Array
+    };
+
+    d.unsubscribe = function(/* Array */handle){
+        var t = handle[0];
+        cache[t] && d.each(cache[t], function(idx){
+            if(this == handle[1]){
+                cache[t].splice(idx, 1);
+            }
+        });
+    };
+
+})(jQuery);
+});
+
+</script>
+
+</head>
+<body>
+  
+</body>
+
+</html>
+
